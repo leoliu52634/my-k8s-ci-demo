@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+spec:
+  replicas: 2 # 模擬開啟 2 個 Pod 副本（自動負載平衡與備援）
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:v1          # 使用你剛剛在本地 build 好的映像檔
+        imagePullPolicy: Never    # 告訴 K8s 直接用本地的映像檔，不用去雲端抓
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  type: NodePort
+  selector:
+    app: my-app
+  ports:
+    - port: 3000
+      targetPort: 3000
