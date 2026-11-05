@@ -1,0 +1,23 @@
+name: Node.js CI with Docker
+
+on:
+  push:
+    branches: [ "main" ] # 當有程式碼推送到 main 分支時自動觸發
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # 使用 GitHub 提供的免費 Linux 雲端主機
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4 # 1. 把你的程式碼抓到雲端主機上
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3 # 2. 在雲端主機準備好 Docker 打包環境
+
+    - name: Build Docker Image
+      uses: docker/build-push-action@v5 # 3. 執行 Docker 打包測試
+      with:
+        context: .
+        push: false # 先不出傳到第三方，只測試能不能成功 Build 出來
+        tags: my-app:latest
